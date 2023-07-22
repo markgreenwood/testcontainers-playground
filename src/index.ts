@@ -1,0 +1,1 @@
+console.log("This repo is a playground for experimenting with testcontainers");
