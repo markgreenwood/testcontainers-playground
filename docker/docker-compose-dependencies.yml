@@ -1,0 +1,17 @@
+version: '3'
+services:
+  test-db:
+    container_name: test-db
+    image: postgres:11.13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+  db-migration:
+    image: flyway/flyway:7
+    command: -url=jdbc:postgresql://test-db:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=60 migrate
+    volumes:
+      - ../migrations:/flyway/sql
+    depends_on:
+      - test-db

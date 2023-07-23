@@ -5,7 +5,7 @@ import {
 import { Pool } from "pg";
 
 describe("The database", () => {
-  jest.setTimeout(10000);
+  jest.setTimeout(30000);
 
   let dbContainer: StartedPostgreSqlContainer;
   let pool: Pool;
