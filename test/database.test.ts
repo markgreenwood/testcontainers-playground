@@ -45,24 +45,25 @@ describe("The database", () => {
     // dbLogs.on("data", console.log);
 
     const dbContainerIp = dbContainer.getIpAddress(network.getName());
-    const dbContainerPort = dbContainer.getPort();
+    const dbContainerPort = 5432;
 
-    // Get the container IP for Postgres DB
-    // const databaseContainerIp = await getContainerActualIp(dbContainer);
-    // if (!databaseContainerIp) {
-    //   await dbContainer.stop({ removeVolumes: true });
-    //   throw new Error("Unable to determine test Postgres container IP address");
-    // }
     const migrationPath = path.resolve("migrations");
     // -url=jdbc:postgresql://test-db:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=60 migrate
-    const migrateCommand = `flyway -url=jdbc:postgresql://${dbContainerIp}:${dbContainerPort}/postgres -schemas=public -user=postgres -password=postgres migrate`;
+    const migrateCommand = [
+      `-url=jdbc:postgresql://${dbContainerIp}:${dbContainerPort}/postgres`,
+      "-schemas=public",
+      "-user=postgres",
+      "-password=postgres",
+      "migrate",
+    ];
     // Use a generic container for Flyway (migrations)
     const flywayContainer = await new GenericContainer("flyway/flyway:7")
       .withNetwork(network)
       .withWaitStrategy(Wait.forLogMessage("Successfully applied"))
       .withDefaultLogDriver()
-      .withCommand([migrateCommand])
-        // Use instead of .withBindMounts (no longer recommended)
+      .withLogConsumer(logstream => logstream.on("data", console.log))
+      .withCommand(migrateCommand)
+      // Use instead of .withBindMounts (no longer recommended)
       .withCopyDirectoriesToContainer([
         { source: migrationPath, target: "/flyway/sql" },
       ])
