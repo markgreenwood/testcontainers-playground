@@ -81,10 +81,10 @@ describe("The database", () => {
       text: "INSERT INTO public.test_item (id, description) VALUES ($1, $2)",
       values: ["id-1", "Description of item 1"],
     });
-    const records = await pool.query<{ id: string, description: string }>(
+    const records = await pool.query<{ id: string; description: string }>(
       "SELECT * FROM public.test_item",
     );
     expect(records.rows.length).toBe(1);
-    expect(records.rows[0].description).toBe("Description of item 1")
+    expect(records.rows[0].description).toBe("Description of item 1");
   });
 });
