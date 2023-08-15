@@ -23,7 +23,6 @@ describe("The database", () => {
   beforeEach(async () => {
     console.log("Before...");
 
-    // TODO: Do I need to create a Docker network for these two containers?
     const network = await new Network().start();
 
     // Create the Postgres container
