@@ -2,6 +2,7 @@ import { Pool, PoolConfig } from "pg";
 import {
   baseTestPoolConfig,
   createTestDatabaseWithTestContainers,
+  dangerouslyClearTestDatabase,
 } from "./testUtilities";
 
 describe("The database", () => {
@@ -17,8 +18,9 @@ describe("The database", () => {
     );
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     testConnectionPool = new Pool(testPoolConfig);
+    await dangerouslyClearTestDatabase(testConnectionPool);
   });
 
   afterEach(async () => {
